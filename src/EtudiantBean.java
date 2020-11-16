@@ -11,7 +11,8 @@ public class EtudiantBean implements Serializable {
     private List<InscriptionBean> inscriptions;
     private static int count = 0;
 
-    public EtudiantBean(){ count++; this.setEtudiantid(count);}
+    //public EtudiantBean(){ count++; this.setEtudiantid(count);}
+    public EtudiantBean(){}
 
     public String getFname() { return fname; }
 
@@ -40,4 +41,16 @@ public class EtudiantBean implements Serializable {
     public String getTableName(){ return tableName;}
 
     public int getCount() { return count;}
+
+    public String sqlQuery(String s){
+        String query = null;
+        if (s == "insert") {
+            query = "insert into etudiant" + " (etudiantid, fname, lname, age)"
+                    + " values (?, ?, ?, ?)";
+        }
+        if (s == "select"){
+            query = "select * from etudiant";
+        }
+        return query;
+    }
 }

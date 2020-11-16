@@ -2,22 +2,20 @@ import java.io.Serializable;
 import java.util.List;
 
 public class CoursBean implements Serializable {
-    public String test = "test";
     private String tableName = "cours";
     private int coursID;
     private String name;
     private String sigle;
     private String description;
     private List<InscriptionBean> inscriptions;
-    private String url;
-    private String query;
     private static int count = 0;
 
-    public CoursBean() { count++; this.setCoursID(count);}
+    //public CoursBean() { count++; this.setCoursID(count);}
+    public CoursBean() { }
 
     public int getCoursID() { return coursID; }
 
-    private void setCoursID(int coursID) { this.coursID = coursID; }
+    public void setCoursID(int coursID) { this.coursID = coursID; }
 
     public String getName() { return name; }
 
@@ -39,10 +37,19 @@ public class CoursBean implements Serializable {
 
     public void removeInscription(InscriptionBean ins){ inscriptions.remove(ins); }
 
-    public void setUrl(String url) { this.url = url;}
-
     public int getCount() { return count;}
 
     public String getTableName(){return tableName;}
 
+    public String sqlQuery(String s){
+        String query = null;
+        if (s == "insert") {
+            query = "insert into cours" + " (coursid, name, sigle, description)"
+                    + " values (?, ?, ?, ?)";
+        }
+        if (s == "select"){
+            query = "select * from cours";
+        }
+        return query;
+    }
 }

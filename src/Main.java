@@ -4,15 +4,14 @@ import java.util.Scanner;
 
 public class Main<T> {
     public static void main(String[] args) {
-        ArrayList<CoursBean> listCours;
-//        ArrayList<CoursBean> listCours = new ArrayList<CoursBean>();
-        ArrayList<EtudiantBean> listEtudiants = new ArrayList<EtudiantBean>();
-        ArrayList<InscriptionBean> listInscriptions = new ArrayList<InscriptionBean>();
+        List<CoursBean> listCours = new ArrayList<CoursBean>();
+        List<EtudiantBean> listEtudiants = new ArrayList<EtudiantBean>();
+        List<InscriptionBean> listInscriptions = new ArrayList<InscriptionBean>();
         try{
-           // listCours = retrieve();
-//            ArrayList<CoursBean> listeCours = new ArrayList<CoursBean>();
-//            ArrayList<EtudiantBean> listeEtudiants = new ArrayList<EtudiantBean>();
-//            ArrayList<InscriptionBean> listeInscriptions = new ArrayList<InscriptionBean>();
+            DatabaseManager databaseManager = new DatabaseManager();
+            CoursBean cb = new CoursBean();
+            listCours = databaseManager.retrieve(CoursBean.class, cb.sqlQuery("select"));
+
             boolean bool = true;
             while(bool){
                 System.out.println("-----------------Menu-----------------");
@@ -81,8 +80,8 @@ public class Main<T> {
             cours.setDescription(s);
 
             //Établit une connexion et selectionne une table
-            DatabaseManager databaseManager = new DatabaseManager(cours);
-            databaseManager.insert();
+            DatabaseManager databaseManager = new DatabaseManager();
+            databaseManager.insert(cours);
         }
         catch(Exception e){
             System.out.println(e);
@@ -105,8 +104,8 @@ public class Main<T> {
             etudiant.setAge(age);
 
             //Établit une connexion et selectionne une table
-            DatabaseManager databaseManager = new DatabaseManager(etudiant);
-            databaseManager.insert();
+            DatabaseManager databaseManager = new DatabaseManager();
+            databaseManager.insert(etudiant);
         }
         catch(Exception e){
             System.out.println(e);

@@ -29,4 +29,16 @@ public class InscriptionBean implements Serializable {
     public EtudiantBean getEtudiant() { return etudiant; }
 
     public void setEtudiant(EtudiantBean etudiant) { this.etudiant = etudiant; }
+
+    public String sqlQuery(String s){
+        String query = null;
+        if (s == "insert") {
+            query = "insert into inscription" + " (inscriptionid, etudiantid, coursid, date)"
+                    + " values (?, ?, ?, ?)";
+        }
+        if (s == "select"){
+            query = "select * from inscription";
+        }
+        return query;
+    }
 }
