@@ -5,7 +5,7 @@ public class CoursBean implements Serializable {
     private String tableName = "cours";
     private int coursID;
     private String name;
-    private String sigle;
+    //private String sigle;
     private String description;
     private List<InscriptionBean> inscriptions;
     private static int count = 0;
@@ -21,9 +21,9 @@ public class CoursBean implements Serializable {
 
     public void setName(String name) { this.name = name; }
 
-    public String getSigle() { return sigle; }
+    //public String getSigle() { return sigle; }
 
-    public void setSigle(String sigle) { this.sigle = sigle; }
+    //public void setSigle(String sigle) { this.sigle = sigle; }
 
     public String getDescription() { return description; }
 
