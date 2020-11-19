@@ -1,3 +1,5 @@
+package beans;
+
 import java.io.Serializable;
 
 public class InscriptionBean implements Serializable {
