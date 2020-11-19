@@ -10,7 +10,7 @@ public class Main<T> {
         try{
             DatabaseManager databaseManager = new DatabaseManager();
             CoursBean cb = new CoursBean();
-            listCours = databaseManager.retrieve(CoursBean.class, cb.sqlQuery("select"));
+            listCours = databaseManager.retrieve(cb.getClass(), cb.sqlQuery("select"));
 
             boolean bool = true;
             while(bool){

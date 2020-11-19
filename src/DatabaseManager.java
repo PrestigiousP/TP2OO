@@ -14,11 +14,13 @@ public class DatabaseManager<T> {
         // 1. Get a connection to database
         this.connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TP2OO", "postgres", "196432");
     }
+
     public List<T> retrieve(Class<T> t, String sql) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         List<T> list = new ArrayList<>();
         Statement statement = connection.createStatement();
-        Method method = t.getClass().getDeclaredMethod("getTableName", null);
-        String tableName = (String) method.invoke(t);
+        t.getClass();
+        Method method = t.getDeclaredMethod("getTableName", null);
+        String tableName = (String) method.invoke(t.getClass());
         ResultSet resultSet = statement.executeQuery("select * from "+ tableName);
 
         if (tableName == "cours") {
