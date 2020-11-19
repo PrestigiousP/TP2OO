@@ -1,21 +1,12 @@
-import java.sql.*;
+import beans.CoursBean;
+import pm.PersistentManager;
 
-public class Main {
-    public static void main(String[] args) {
-        try{
-            // 1. Get a connection to database
-            Connection connect = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TP2OO", "postgres", "196432");
-            // 2. Create a statement
-            Statement statement = connect.createStatement();
-            // 3. Execute SQL query
-            ResultSet myRs = statement.executeQuery("select * from cours");
-            // 4. Process the result set
-            while(myRs.next()){
-                System.out.println(myRs.getString("name") +  ", " + myRs.getString("coursid"));
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+import java.util.List;
+
+public class Main<T> {
+    public static void main(String[] args) { //Je crée un
+        PersistentManager db = new PersistentManager(); //Persisten
+        List<CoursBean> listcours = db.retrieveSet(CoursBean.class, "SELECT * FROM cours"); //Retourne une liste de cours
+        //Annotation dbIgnore sur les champs qu'on veut pas chercher
     }
 }
