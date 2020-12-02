@@ -37,27 +37,25 @@ public class CoursBean implements Serializable {
 
     public void setDescription(String description) { this.description = description; }
 
-    public List<InscriptionBean> getInscriptions() { return inscriptions; }
+//    public List<InscriptionBean> getInscriptions() { return inscriptions; }
+//
+//    public void setInscriptions(List<InscriptionBean> inscriptions) { this.inscriptions = inscriptions; }
+//
+//    public void addInscription(InscriptionBean ins){ inscriptions.add(ins); }
+//
+//    public void removeInscription(InscriptionBean ins){ inscriptions.remove(ins); }
 
-    public void setInscriptions(List<InscriptionBean> inscriptions) { this.inscriptions = inscriptions; }
+    //public String getTableName(){return tableName;}
 
-    public void addInscription(InscriptionBean ins){ inscriptions.add(ins); }
-
-    public void removeInscription(InscriptionBean ins){ inscriptions.remove(ins); }
-
-    public int getCount() {return count;}
-
-    public String getTableName(){return tableName;}
-
-    public String sqlQuery(String s){
-        String query = null;
-        if (s == "insert") {
-            query = "insert into cours" + " (coursid, name, sigle, description)"
-                    + " values (?, ?, ?, ?)";
-        }
-        if (s == "select"){
-            query = "select * from cours";
-        }
-        return query;
-    }
+//    public String sqlQuery(String s){
+//        String query = null;
+//        if (s == "insert") {
+//            query = "insert into cours" + " (coursid, name, sigle, description)"
+//                    + " values (?, ?, ?, ?)";
+//        }
+//        if (s == "select"){
+//            query = "select * from cours";
+//        }
+//        return query;
+//    }
 }

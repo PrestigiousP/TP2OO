@@ -3,6 +3,7 @@ package pm;
 import beans.CoursBean;
 import beans.EtudiantBean;
 import beans.InscriptionBean;
+import pm.annotations.DbEntity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,10 +19,18 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
         // 1. Get a connection to database
         this.connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TP2OO", "postgres", "196432");
     }
-    public List<T> retrieveSet(Class<T> beanClass, String sql) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        //Créer une classe qui :
+    //public List<T> retrieveSet(Class<T> beanClass, String sql) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void retrieveSet(Class<T> beanClass, String sql) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+        Class<?> coursClass = CoursBean.class;
+        DbEntity annot = coursClass.getAnnotation(DbEntity.class);
+        System.out.println(annot);
+
+
+            //Créer une classe qui :
             // - Vérifier annotation présente
             // - Vérifier les champs
+
     }
     public void createConnection(){
 

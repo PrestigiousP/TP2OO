@@ -1,12 +1,16 @@
 package beans;
 
+import pm.annotations.DbEntity;
+
 import java.io.Serializable;
 
+@DbEntity(table="inscription")
 public class InscriptionBean implements Serializable {
 
     private int inscriptionid;
     private int etudiantid;
     private int coursid;
+
     private CoursBean cours;
     private EtudiantBean etudiant;
 
@@ -32,15 +36,15 @@ public class InscriptionBean implements Serializable {
 
     public void setEtudiant(EtudiantBean etudiant) { this.etudiant = etudiant; }
 
-    public String sqlQuery(String s){
-        String query = null;
-        if (s == "insert") {
-            query = "insert into inscription" + " (inscriptionid, etudiantid, coursid, date)"
-                    + " values (?, ?, ?, ?)";
-        }
-        if (s == "select"){
-            query = "select * from inscription";
-        }
-        return query;
-    }
+//    public String sqlQuery(String s){
+//        String query = null;
+//        if (s == "insert") {
+//            query = "insert into inscription" + " (inscriptionid, etudiantid, coursid, date)"
+//                    + " values (?, ?, ?, ?)";
+//        }
+//        if (s == "select"){
+//            query = "select * from inscription";
+//        }
+//        return query;
+//    }
 }
