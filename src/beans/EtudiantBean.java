@@ -1,3 +1,5 @@
+package beans;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,7 +13,7 @@ public class EtudiantBean implements Serializable {
     private List<InscriptionBean> inscriptions;
     private static int count = 0;
 
-    //public EtudiantBean(){ count++; this.setEtudiantid(count);}
+    //public beans.EtudiantBean(){ count++; this.setEtudiantid(count);}
     public EtudiantBean(){}
 
     public String getFname() { return fname; }

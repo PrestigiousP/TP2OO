@@ -1,16 +1,24 @@
+package beans;
+
+import pm.annotations.DbEntity;
+import pm.annotations.DbJoin;
+
 import java.io.Serializable;
 import java.util.List;
 
+@DbEntity(table="cours")
 public class CoursBean implements Serializable {
-    private String tableName = "cours";
+    //Bean Type Simple
     private int coursID;
     private String name;
     private String sigle;
     private String description;
-    private List<InscriptionBean> inscriptions;
-    private static int count = 0;
 
-    //public CoursBean() { count++; this.setCoursID(count);}
+    //Bean type collection de bean
+    @DbJoin(innerkeys = "coursID", outerkeys = "coursID")
+    private List<InscriptionBean> inscriptions;         //Annotation qui fait matcher dans
+    //Quand on va arriver pour retrieve la liste d'inscription : SELECT * FROM INSCRIPTION WHERE ID = COURSID
+
     public CoursBean() { }
 
     public int getCoursID() { return coursID; }
@@ -37,7 +45,7 @@ public class CoursBean implements Serializable {
 
     public void removeInscription(InscriptionBean ins){ inscriptions.remove(ins); }
 
-    public int getCount() { return count;}
+    public int getCount() {return count;}
 
     public String getTableName(){return tableName;}
 
