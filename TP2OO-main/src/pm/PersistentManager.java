@@ -1,15 +1,11 @@
 package pm;
 
-import beans.CoursBean;
-import pm.annotations.DbEntity;
-import pm.annotations.DbJoin;
 import pm.annotations.FK;
 import pm.annotations.PK;
 import pm.retrieve.RAnnotationsProcessor;
 import java.lang.reflect.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PersistentManager<T> {         //Objectif : effectuer les requêtes demandées par rapport à la db vers les beans
@@ -20,8 +16,6 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
         // 1. Get a connection to database
         this.connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/DBTP2", "postgres", "nascar466");
     }
-
-
 
     public List<T> retrieveSet(Class<T> tClass, String sqlRequest) {
 
@@ -105,5 +99,66 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
             System.out.println(e);
         }
         return listTObject;
+    }
+
+    public<T> int bulkInsert(List<T> b) throws SQLException, IllegalAccessException {
+        for(T bean : b){
+            this.insert(bean);
+        }
+        return 1;
+    }
+
+    public<T> int insert(T b) throws SQLException, IllegalAccessException {
+        int i = 0;
+        RAnnotationsProcessor insertProcessor = new RAnnotationsProcessor(b.getClass());
+        String sqlInsert = "INSERT INTO " + insertProcessor.getDbAnnotations().table() + "(";
+        String sqlInconnu = "(";
+        List<Field> simpleFields = insertProcessor.getSimpleFields();
+        String typeField[] = new String[100];
+        for (i = 0; i < simpleFields.size(); i++) {
+            Field fieldT = simpleFields.get(i);
+            typeField[i] = fieldT.getType().getTypeName();
+            fieldT.setAccessible(true);
+            //Nom du champ ajouté à notre sqlInsert
+            sqlInsert += fieldT.getName();
+            if (i == simpleFields.size()-1){
+                sqlInconnu += "?)";
+                sqlInsert+=")";
+            }
+            else{
+                sqlInsert +=", ";
+                sqlInconnu += "?, ";
+            }
+        }
+        sqlInsert += " VALUES " + sqlInconnu;
+        PreparedStatement ps = connection.prepareStatement(sqlInsert);
+        for (i = 0; i < simpleFields.size(); i++) {
+            switch (typeField[i]) {
+                case "java.lang.String":
+                    simpleFields.get(i).setAccessible(true);
+                    ps.setString((i+1), (String) simpleFields.get(i).get(b));
+                    break;
+                case "int":
+                    simpleFields.get(i).setAccessible(true);
+                    ps.setInt((i+1), (int) simpleFields.get(i).get(b));
+                    break;
+            }
+        }
+        ps.execute();
+
+       List<InnerBeans> innerBean = insertProcessor.getInnerBeansFields();
+        for (i = 0; i < innerBean.size(); i++) {
+            innerBean.get(i).getOuterField().setAccessible(true);
+            this.insert(innerBean.get(i).getOuterField().get(b));
+        }
+
+        List<CollectionInnerBeans> colInnerBean = insertProcessor.getCollectionInnerBeansFields();
+        for (i = 0; i < colInnerBean.size(); i++) {
+            colInnerBean.get(i).getOuterField().setAccessible(true);
+            List<T> colInner = (List<T>) colInnerBean.get(i).getOuterField().get(b);
+            this.bulkInsert(colInner);
+        }
+
+        return 1;
     }
 }

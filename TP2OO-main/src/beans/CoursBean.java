@@ -41,4 +41,12 @@ public class CoursBean implements Serializable {
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
+
+    public List<InscriptionBean> getInscriptions() {
+        return inscriptions;
+    }
+
+    public void setInscriptions(List<InscriptionBean> inscriptions) {
+        this.inscriptions = inscriptions;
+    }
 }
