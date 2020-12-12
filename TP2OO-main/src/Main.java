@@ -13,8 +13,8 @@ public class Main<T> {
 
         PersistentManager db = new PersistentManager(); //Persisten
 
-        RAnnotationsProcessor retrieveProcessor = new RAnnotationsProcessor(CoursBean.class);
-        List<CoursBean> listcours = db.retrieveSet(CoursBean.class, "SELECT * FROM inscription", retrieveProcessor); //Retourne une liste de cours
+
+        List<CoursBean> listcours = db.retrieveSet(CoursBean.class, "SELECT * FROM cours"); //Retourne une liste de cours
 
        //Annotation dbIgnore sur les champs qu'on veut pas chercher
         System.out.println(listcours.toString());

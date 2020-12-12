@@ -1,5 +1,6 @@
 package pm;
 
+import beans.CoursBean;
 import pm.annotations.DbEntity;
 import pm.annotations.DbJoin;
 import pm.annotations.FK;
@@ -20,8 +21,11 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
         this.connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/DBTP2", "postgres", "nascar466");
     }
 
-    public List<T> retrieveSet(Class<T> tClass, String sqlRequest, RAnnotationsProcessor retrieveProcessor) {
 
+
+    public List<T> retrieveSet(Class<T> tClass, String sqlRequest) {
+
+        RAnnotationsProcessor retrieveProcessor = new RAnnotationsProcessor(tClass);
         List<T> listTObject = new ArrayList<>();
         T tObject;
         int valuePk = 0;
@@ -73,7 +77,7 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
                     //Requête SQL
                     String sql = "SELECT * FROM " + c.getRetrieveProcessor().getDbAnnotations().table() + " WHERE " + c.getJoinAnnotation().innerkeys()[0] + " = " + valuePk;
 
-                    List<T> colInnerBean = retrieveSet(representCol, sql, c.getRetrieveProcessor());
+                    List<T> colInnerBean = retrieveSet(representCol, sql);
 
                     outerField.setAccessible(true);
                     outerField.set(tObject, colInnerBean);
@@ -86,7 +90,7 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
                     Class<T> representCol = (Class<T>) i.getOuterField().getType(); //SELECT * FROM cours WHERE coursid = 1
                     String sql = "SELECT * FROM " + i.getRetrieveProcessor().getDbAnnotations().table() + " WHERE " + i.getJoinAnnotation().innerkeys()[0] + " = " + valueFk[iCounter++];
 
-                    List<T> InnerBean = retrieveSet(representCol, sql, i.getRetrieveProcessor());
+                    List<T> InnerBean = retrieveSet(representCol, sql);
 
                     outerField.setAccessible(true);
                     outerField.set(tObject, InnerBean.get(0));
