@@ -3,6 +3,7 @@ package beans;
 import pm.annotations.DbEntity;
 import pm.annotations.DbIgnored;
 import pm.annotations.DbJoin;
+import pm.annotations.PK;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,20 +11,21 @@ import java.util.List;
 @DbEntity(table="etudiant")
 public class EtudiantBean implements Serializable {
 
-    private int etudiantID;
+    //Type simple
+    @PK(pk = "etudiantid")
+    private int etudiantid;
     private String fname;
     private String lname;
     private int age;
 
-    //@DbJoin(innerkeys = "etudiantID", outerkeys = "etudiantID")
-    @DbIgnored
+    //Type collectionInnerBean
+    @DbJoin(innerkeys = "etudiantid", outerkeys = "etudiantid")
     private List<InscriptionBean> inscriptions;
-//    private static int count = 0;
 
-    //public beans.EtudiantBean(){ count++; this.setEtudiantid(count);}
-
+    //Constructeur vide
     public EtudiantBean(){}
 
+    //Getter and setter
     public String getFname() { return fname; }
 
     public void setFname(String fname) { this.fname = fname; }
@@ -36,31 +38,12 @@ public class EtudiantBean implements Serializable {
 
     public void setAge(int age) { this.age = age; }
 
-//    public List<InscriptionBean> getInscriptions() { return inscriptions; }
-//
-//    public void setInscriptions(List<InscriptionBean> inscriptions) { this.inscriptions = inscriptions; }
+    public List<InscriptionBean> getInscriptions() { return inscriptions; }
 
-    public int getEtudiantID() { return etudiantID; }
+    public void setInscriptions(List<InscriptionBean> inscriptions) { this.inscriptions = inscriptions; }
 
-    public void setEtudiantID(int etudiantid) { this.etudiantID = etudiantID; }
+    public int getEtudiantID() { return etudiantid; }
 
-//    public void addInscription(InscriptionBean ins){ inscriptions.add(ins); }
-//
-//    public void removeInscription(InscriptionBean ins){ inscriptions.remove(ins); }
+    public void setEtudiantID(int etudiantid) { this.etudiantid = etudiantid; }
 
-//    public String getTableName(){ return tableName;}
-//
-//    public int getCount() { return count;}
-//
-//    public String sqlQuery(String s){
-//        String query = null;
-//        if (s == "insert") {
-//            query = "insert into etudiant" + " (etudiantid, fname, lname, age)"
-//                    + " values (?, ?, ?, ?)";
-//        }
-//        if (s == "select"){
-//            query = "select * from etudiant";
-//        }
-//        return query;
-//    }
 }

@@ -2,6 +2,7 @@ import beans.CoursBean;
 import beans.EtudiantBean;
 import beans.InscriptionBean;
 import pm.PersistentManager;
+import pm.retrieve.RAnnotationsProcessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -12,7 +13,8 @@ public class Main<T> {
 
         PersistentManager db = new PersistentManager(); //Persisten
 
-        List<InscriptionBean> listcours = db.retrieveSet(InscriptionBean.class, "SELECT * FROM inscription"); //Retourne une liste de cours
+        RAnnotationsProcessor retrieveProcessor = new RAnnotationsProcessor(CoursBean.class);
+        List<CoursBean> listcours = db.retrieveSet(CoursBean.class, "SELECT * FROM inscription", retrieveProcessor); //Retourne une liste de cours
 
        //Annotation dbIgnore sur les champs qu'on veut pas chercher
         System.out.println(listcours.toString());

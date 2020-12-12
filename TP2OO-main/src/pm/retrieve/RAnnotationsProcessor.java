@@ -17,6 +17,7 @@ public class RAnnotationsProcessor<T> {        //Récupérer les métats informa
     private List<CollectionInnerBeans> collectionInnerBeansFields;
     private DbEntity dbAnnotations;
 
+    //Constructeur
     public RAnnotationsProcessor(Class<T> tClass) {
         this.simpleFields = new ArrayList<Field>();
         this.ignoredFields = new ArrayList<Field>();
@@ -24,26 +25,35 @@ public class RAnnotationsProcessor<T> {        //Récupérer les métats informa
         this.collectionInnerBeansFields = new ArrayList<CollectionInnerBeans>();
 
         for (Field fieldT : tClass.getDeclaredFields()){
+            //Liste de champs à ignorer lors du retrieve
             if(fieldT.isAnnotationPresent(DbIgnored.class)){
-                this.ignoredFields.add(fieldT);
+                this.ignoredFields.add(fieldT);             //On ne s'en servira probablement pas, mais on les gardes en mémoire si jamais.
             }
+            //Liste de collectionInnerBean sur lesquels on doit effectuer un retrieve
             else if(fieldT.isAnnotationPresent(DbJoin.class)){
+                //Représentant de la classe
                 ParameterizedType stringListType = (ParameterizedType) fieldT.getGenericType();
                 Class<T> representCol = (Class<T>) stringListType.getActualTypeArguments()[0];
+                //Ajout de la collectionInnerBean dans notre liste
                 this.collectionInnerBeansFields.add(new CollectionInnerBeans(fieldT, new RAnnotationsProcessor(representCol), fieldT.getAnnotation(DbJoin.class)));
             }
+            //Liste de InnerBean sur lesquels on doit effectuer un retrieve
             else if(fieldT.isAnnotationPresent(DbJoinInner.class)){
+                //Représent de la classe
                 Class<T> representInner = (Class<T>) fieldT.getType();
-               this.innerBeansFields.add(new InnerBeans(fieldT, new RAnnotationsProcessor(representInner), fieldT.getAnnotation(DbJoinInner.class)));
+                //Ajout du InnerBean dans notre liste
+                this.innerBeansFields.add(new InnerBeans(fieldT, new RAnnotationsProcessor(representInner), fieldT.getAnnotation(DbJoinInner.class)));
             }
+            //Ajout des champs de types simples dans notre liste
             else{
                 this.simpleFields.add(fieldT);
             }
         }
-
+        //Annotation de la table associée à notre bean
         this.dbAnnotations = tClass.getAnnotation(DbEntity.class);
     }
 
+    //Getter and setter
     public List<Field> getSimpleFields() {
         return simpleFields;
     }

@@ -7,21 +7,23 @@ import java.io.Serializable;
 @DbEntity(table="inscription")
 public class InscriptionBean implements Serializable {
 
+    //Type simple
     private int inscriptionid;
     @FK(fk="etudiantid")
     private int etudiantid;
     @FK(fk="coursid")
     private int coursid;
 
-    //@DbIgnored
-    @DbJoinInner(innerkeys = "coursid", outerkeys = "coursid")
+    //Inner bean mais ils sont ignored pour éviter une boucle infini
+    @DbIgnored
     private CoursBean cours;
-    //@DbIgnored
-    @DbJoinInner(innerkeys = "etudiantid", outerkeys = "etudiantid")
+    @DbIgnored
     private EtudiantBean etudiant;
 
+    //Constructeur vide
     public InscriptionBean(){ }
 
+    //Getter and setter
     public int getInscriptionid() { return inscriptionid; }
 
     public void setInscriptionid(int inscriptionid) { this.inscriptionid = inscriptionid; }
@@ -41,16 +43,4 @@ public class InscriptionBean implements Serializable {
     public EtudiantBean getEtudiant() { return etudiant; }
 
     public void setEtudiant(EtudiantBean etudiant) { this.etudiant = etudiant; }
-
-//    public String sqlQuery(String s){
-//        String query = null;
-//        if (s == "insert") {
-//            query = "insert into inscription" + " (inscriptionid, etudiantid, coursid, date)"
-//                    + " values (?, ?, ?, ?)";
-//        }
-//        if (s == "select"){
-//            query = "select * from inscription";
-//        }
-//        return query;
-//    }
 }
