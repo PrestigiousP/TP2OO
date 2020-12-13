@@ -1,5 +1,6 @@
 package pm;
-
+import aspect.CheckAspectInterface;
+import com.google.inject.Inject;
 import pm.annotations.FK;
 import pm.annotations.PK;
 import pm.retrieve.RAnnotationsProcessor;
@@ -8,15 +9,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersistentManager<T> {         //Objectif : effectuer les requêtes demandées par rapport à la db vers les beans
+public class PersistentManager<T> implements PersistentManagerLog{         //Objectif : effectuer les requêtes demandées par rapport à la db vers les beans
 
     private final Connection connection;
 
+    @Inject
     public PersistentManager() throws SQLException {
         // 1. Get a connection to database
-        this.connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/DBTP2", "postgres", "nascar466");
+        this.connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/DBTP2", "postgres", "196432");
     }
 
+
+    @CheckAspectInterface
     public List<T> retrieveSet(Class<T> tClass, String sqlRequest) {
 
         RAnnotationsProcessor retrieveProcessor = new RAnnotationsProcessor(tClass);
@@ -101,6 +105,7 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
         return listTObject;
     }
 
+    @CheckAspectInterface
     public<T> int bulkInsert(List<T> b) throws SQLException, IllegalAccessException {
         for(T bean : b){
             this.insert(bean);
@@ -108,6 +113,7 @@ public class PersistentManager<T> {         //Objectif : effectuer les requêtes
         return 1;
     }
 
+    @CheckAspectInterface
     public<T> int insert(T b) throws SQLException, IllegalAccessException {
         int i = 0;
         RAnnotationsProcessor insertProcessor = new RAnnotationsProcessor(b.getClass());
