@@ -21,7 +21,7 @@ public class PersistentManager<T> implements PersistentManagerLog{         //Obj
 
 
     @CheckAspectInterface
-    public List<T> retrieveSet(Class<T> tClass, String sqlRequest) {
+    public List<T> retrieveSet(Class<T> tClass, String sqlRequest) throws SQLException, IllegalAccessException, InstantiationException {
 
         RAnnotationsProcessor retrieveProcessor = new RAnnotationsProcessor(tClass);
         List<T> listTObject = new ArrayList<>();
@@ -30,80 +30,75 @@ public class PersistentManager<T> implements PersistentManagerLog{         //Obj
         int counter = 0;
         int valueFk[] = new int[10];
 
-        try{
-            listTObject = new ArrayList<>();
-            Field[] fields = tClass.getDeclaredFields();
+        listTObject = new ArrayList<>();
+        Field[] fields = tClass.getDeclaredFields();
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sqlRequest);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sqlRequest);
 
-            while (resultSet.next()) {
-                tObject = tClass.newInstance();
+        while (resultSet.next()) {
+            tObject = tClass.newInstance();
 
 
-                for (Field fieldT : (List<Field>) retrieveProcessor.getSimpleFields()) {
-                    fieldT.setAccessible(true);
-                    //Nom du champ et nom du représentant de la classe associée à notre champ de type simple
-                    String nameField = fieldT.getName();
-                    String typeField = fieldT.getType().getTypeName();
+            for (Field fieldT : (List<Field>) retrieveProcessor.getSimpleFields()) {
+                fieldT.setAccessible(true);
+                //Nom du champ et nom du représentant de la classe associée à notre champ de type simple
+                String nameField = fieldT.getName();
+                String typeField = fieldT.getType().getTypeName();
 
-                    switch (typeField) {
-                        case "java.lang.String":
-                            fieldT.set(tObject, resultSet.getString(nameField));
-                            break;
-                        case "int":
-                            fieldT.set(tObject, resultSet.getInt(nameField));
-                            break;
-                    }
-
-                    if(fieldT.isAnnotationPresent(PK.class)){
-                        valuePk = (int) fieldT.get(tObject);
-                    }
-                    if(fieldT.isAnnotationPresent(FK.class)){
-                        valueFk[counter++] = (int) fieldT.get(tObject);
-                    }
+                switch (typeField) {
+                    case "java.lang.String":
+                        fieldT.set(tObject, resultSet.getString(nameField));
+                        break;
+                    case "int":
+                        fieldT.set(tObject, resultSet.getInt(nameField));
+                        break;
                 }
 
-                for (CollectionInnerBeans c : (List<CollectionInnerBeans>) retrieveProcessor.getCollectionInnerBeansFields()){
-                    //Représentant du champ outerField
-                    Field outerField = c.getOuterField();
-
-                    //Représentant de la classe de notre champ de collectionInnerBean "outerField"
-                    ParameterizedType stringListType = (ParameterizedType) outerField.getGenericType();
-                    Class<T> representCol = (Class<T>) stringListType.getActualTypeArguments()[0];
-
-                    //Requête SQL
-                    String sql = "SELECT * FROM " + c.getRetrieveProcessor().getDbAnnotations().table() + " WHERE " + c.getJoinAnnotation().innerkeys()[0] + " = " + valuePk;
-
-                    List<T> colInnerBean = retrieveSet(representCol, sql);
-
-                    outerField.setAccessible(true);
-                    outerField.set(tObject, colInnerBean);
+                if(fieldT.isAnnotationPresent(PK.class)){
+                    valuePk = (int) fieldT.get(tObject);
                 }
-
-                int iCounter = 0;
-                for (InnerBeans i : (List<InnerBeans>) retrieveProcessor.getInnerBeansFields()){
-
-                    Field outerField = i.getOuterField();
-                    Class<T> representCol = (Class<T>) i.getOuterField().getType(); //SELECT * FROM cours WHERE coursid = 1
-                    String sql = "SELECT * FROM " + i.getRetrieveProcessor().getDbAnnotations().table() + " WHERE " + i.getJoinAnnotation().innerkeys()[0] + " = " + valueFk[iCounter++];
-
-                    List<T> InnerBean = retrieveSet(representCol, sql);
-
-                    outerField.setAccessible(true);
-                    outerField.set(tObject, InnerBean.get(0));
+                if(fieldT.isAnnotationPresent(FK.class)){
+                    valueFk[counter++] = (int) fieldT.get(tObject);
                 }
-
-                listTObject.add(tObject);
-                
             }
-            return listTObject;
-        }
-        catch(IllegalAccessException | SQLException | InstantiationException e){
-            System.out.println(e);
+
+            for (CollectionInnerBeans c : (List<CollectionInnerBeans>) retrieveProcessor.getCollectionInnerBeansFields()){
+                //Représentant du champ outerField
+                Field outerField = c.getOuterField();
+
+                //Représentant de la classe de notre champ de collectionInnerBean "outerField"
+                ParameterizedType stringListType = (ParameterizedType) outerField.getGenericType();
+                Class<T> representCol = (Class<T>) stringListType.getActualTypeArguments()[0];
+
+                //Requête SQL
+                String sql = "SELECT * FROM " + c.getRetrieveProcessor().getDbAnnotations().table() + " WHERE " + c.getJoinAnnotation().innerkeys()[0] + " = " + valuePk;
+
+                List<T> colInnerBean = retrieveSet(representCol, sql);
+
+                outerField.setAccessible(true);
+                outerField.set(tObject, colInnerBean);
+            }
+
+            int iCounter = 0;
+            for (InnerBeans i : (List<InnerBeans>) retrieveProcessor.getInnerBeansFields()){
+
+                Field outerField = i.getOuterField();
+                Class<T> representCol = (Class<T>) i.getOuterField().getType(); //SELECT * FROM cours WHERE coursid = 1
+                String sql = "SELECT * FROM " + i.getRetrieveProcessor().getDbAnnotations().table() + " WHERE " + i.getJoinAnnotation().innerkeys()[0] + " = " + valueFk[iCounter++];
+
+                List<T> InnerBean = retrieveSet(representCol, sql);
+
+                outerField.setAccessible(true);
+                outerField.set(tObject, InnerBean.get(0));
+            }
+
+            listTObject.add(tObject);
+
         }
         return listTObject;
     }
+
 
     @CheckAspectInterface
     public<T> int bulkInsert(List<T> b) throws SQLException, IllegalAccessException {
@@ -115,7 +110,7 @@ public class PersistentManager<T> implements PersistentManagerLog{         //Obj
 
     @CheckAspectInterface
     public<T> int insert(T b) throws SQLException, IllegalAccessException {
-        int i = 0;
+        int i;
         RAnnotationsProcessor insertProcessor = new RAnnotationsProcessor(b.getClass());
         String sqlInsert = "INSERT INTO " + insertProcessor.getDbAnnotations().table() + "(";
         String sqlInconnu = "(";

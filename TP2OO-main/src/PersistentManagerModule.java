@@ -5,9 +5,6 @@ import com.google.inject.matcher.Matchers;
 import pm.PersistentManager;
 import pm.PersistentManagerLog;
 
-import java.lang.annotation.Annotation;
-
-
 public class PersistentManagerModule extends AbstractModule {
 
     @Override
@@ -18,7 +15,7 @@ public class PersistentManagerModule extends AbstractModule {
                 new CheckAspect());
 
 
-      //  bind(PersistentManagerLog.class).to(PersistentManager.class);
+        bind(PersistentManagerLog.class).to(PersistentManager.class);
 
     }
 }

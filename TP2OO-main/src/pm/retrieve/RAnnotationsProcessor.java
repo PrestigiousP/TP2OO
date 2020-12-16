@@ -3,7 +3,6 @@ package pm.retrieve;
 import pm.CollectionInnerBeans;
 import pm.InnerBeans;
 import pm.annotations.*;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;

@@ -1,7 +1,6 @@
 package beans;
 
 import pm.annotations.DbEntity;
-import pm.annotations.DbIgnored;
 import pm.annotations.DbJoin;
 import pm.annotations.PK;
 

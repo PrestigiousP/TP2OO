@@ -1,9 +1,7 @@
 package pm;
 
-import pm.annotations.DbJoin;
 import pm.annotations.DbJoinInner;
 import pm.retrieve.RAnnotationsProcessor;
-
 import java.lang.reflect.Field;
 
 public class InnerBeans {

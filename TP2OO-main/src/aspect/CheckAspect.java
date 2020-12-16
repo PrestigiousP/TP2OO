@@ -1,35 +1,31 @@
 package aspect;
-
-import beans.CoursBean;
-import com.sun.org.slf4j.internal.LoggerFactory;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
-import java.lang.reflect.Method;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 
 public class CheckAspect implements MethodInterceptor {
-
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
         try{
-            Object[] objects = methodInvocation.getArguments();
-            String className = this.getClass().getName();
-            //faudra mettre ça générique
-            Method method = this.getClass().getMethod("retrieveSet");
-            Logger log = Logger.getLogger(className);
-            Object result = methodInvocation.proceed();
+            return methodInvocation.proceed();
+        }
+        catch(InstantiationException e){
+            System.out.println("Exception: La classe ne peut pas être instancié.");
+            System.out.println("Stack trace: " + e.fillInStackTrace());
+        }
+        catch(IllegalAccessException e){
+            System.out.println("Exception: Accès illégal.");
+            System.out.println("Stack trace: " + e.fillInStackTrace());
+        }
+        catch(SQLException e){
+            System.out.println("Exception: Exception SQL.");
+            System.out.println("Stack trace: " + e.fillInStackTrace());
         }
         catch (Exception e){
-            //fiare dequoi pour intercepter le result
+            System.out.println("Exception: Non déterminé");
+            System.out.println("Stack trace: " + e.fillInStackTrace());
         }
-        
-
-
-
-
-        System.out.println("testeststt");
         return null;
     }
 }
